@@ -1,8 +1,8 @@
-package com.resagar.todolistxml.database
+package com.resagar.todolistxml.data.database
 
 import android.content.Context
 import androidx.room.Room
-import com.resagar.todolistxml.taskList.domain.TaskDao
+import com.resagar.todolistxml.data.database.task.TaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,12 +16,9 @@ object DbModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "app_tasks")
-            .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
+        Room.databaseBuilder(context, AppDatabase::class.java, "app_tasks").build()
 
     @Singleton
     @Provides
-    fun provideTaskDao(db : AppDatabase): TaskDao = db.taskDao()
+    fun provideTaskDao(db: AppDatabase): TaskDao = db.taskDao()
 }

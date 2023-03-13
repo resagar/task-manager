@@ -2,13 +2,13 @@ package com.resagar.todolistxml.taskList.iu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.resagar.todolistxml.databinding.ActivityMainBinding
-import com.resagar.todolistxml.taskList.domain.Task
+import com.resagar.todolistxml.databinding.LayoutBottomSheetAddTaskBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,28 +20,46 @@ class MainActivity : AppCompatActivity() {
     lateinit var taskListAdapter: TaskListAdapter
 
     private val taskViewModel: TaskViewModel by viewModels()
-    private lateinit var textField: EditText
-    private lateinit var btnAdd: Button
+    private lateinit var bottomSheet: BottomSheetDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.bind(binding.root)!!
+        binding.lifecycleOwner = this
+        binding.taskViewModel = taskViewModel
         setContentView(binding.root)
+
         initRecyclerView()
-        binding.apply {
-            btnAdd = addTask
-            textField = eNewTask
+        showBottomSheetAddTask()
+
+        taskViewModel.apply {
+            taskIsEmpty.observe(this@MainActivity){
+                if (it == true) {
+                    Toast.makeText(this@MainActivity, "field is empty", Toast.LENGTH_SHORT).show()
+                }
+            }
+            closeAddTaskDialog.observe(this@MainActivity) {
+                if(it == true){
+                    bottomSheet.dismiss()
+                }else{
+                    bottomSheet.show()
+                }
+            }
         }
-        btnAdd.setOnClickListener { onClickAddTask() }
+
     }
 
     private fun initRecyclerView(){
         taskViewModel.getTasks()
         taskListAdapter.apply {
-            deleteTask = { onClickDelete(it) }
+            build(taskViewModel)
             setHasStableIds(true)
-            differ.submitList(taskViewModel.taskList.value!!)
+            taskViewModel.taskList.observe(this@MainActivity) {
+                differ.submitList(it)
+            }
         }
         binding.taskList.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -49,23 +67,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onClickAddTask(){
-        if(textField.text.isNullOrEmpty()) {
-            Toast.makeText(this, "field new task empty", Toast.LENGTH_SHORT).show()
-            return
-        }
-        taskViewModel.apply {
-            saveNewTask(textField.text.toString())
-            taskListAdapter.differ.submitList(taskList.value!!)
-        }
-        textField.setText("")
+    private fun showBottomSheetAddTask(){
+        var sheetBinding = LayoutBottomSheetAddTaskBinding.inflate(layoutInflater)
+        sheetBinding = DataBindingUtil.bind(sheetBinding.root)!!
+        sheetBinding.viewModel = taskViewModel
+        sheetBinding.lifecycleOwner = this
+        bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(sheetBinding.root)
     }
-
-    private fun onClickDelete(task: Task) {
-        taskViewModel.apply {
-            deleteTask(task)
-            taskListAdapter.differ.submitList(taskList.value!!)
-        }
-    }
-
 }

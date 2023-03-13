@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">TodoListXML</string>
     <string name="btn_add_task">add</string>
-    <string name="field_addTask">New Task</string>
+    <string name="field_addTask">Task</string>
     <string name="item_example">item</string>
+    <string name="title_new_task">Add New Task</string>
+    <string name="field_add_status">Status</string>
+    <string name="field_add_author">Author</string>
+    <string name="btn_add_save">Guardar</string>
+    <string name="add_task">Add Task</string>
 </resources>

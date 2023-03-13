@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.resagar.todolistxml.taskList.iu.TaskViewModel" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:padding="15dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:text="@string/title_new_task"
+            android:textAlignment="center" />
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@={viewModel.task}"
+            android:hint="@string/field_addTask"
+            android:autofillHints="name"
+            android:inputType="text" />
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@={viewModel.status}"
+            android:hint="@string/field_add_status"
+            android:autofillHints="name"
+            android:inputType="text" />
+
+        <EditText
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@={viewModel.author}"
+            android:hint="@string/field_add_author"
+            android:autofillHints="name"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btn_add_task"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="@{() -> viewModel.saveNewTask()}"
+            android:text="@string/btn_add_save" />
+    </LinearLayout>
+</layout>

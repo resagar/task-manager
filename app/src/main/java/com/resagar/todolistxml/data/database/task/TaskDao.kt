@@ -1,4 +1,4 @@
-package com.resagar.todolistxml.taskList.domain
+package com.resagar.todolistxml.data.database.task
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -8,9 +8,9 @@ import androidx.room.Query
 @Dao
 interface TaskDao {
     @Insert
-    fun insert(vararg tasks: Task)
+    suspend fun insert(vararg taskEntities: TaskEntity)
     @Query("SELECT * FROM tasks_list")
-    fun getAll(): List<Task>
+    suspend fun getAll(): List<TaskEntity>
     @Delete
-    fun delete(task: Task)
+    suspend fun delete(taskEntity: TaskEntity)
 }
